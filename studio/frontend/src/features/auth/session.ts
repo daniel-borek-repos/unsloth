@@ -6,7 +6,7 @@ import { usePlatformStore } from "@/config/env";
 export const AUTH_TOKEN_KEY = "unsloth_auth_token";
 export const AUTH_REFRESH_TOKEN_KEY = "unsloth_auth_refresh_token";
 export const ONBOARDING_DONE_KEY = "unsloth_onboarding_done";
-export const AUTH_MUST_CHANGE_PASSWORD_KEY = "unsloth_auth_must_change_password";
+export const AUTH_MUST_CHANGE_CREDENTIALS_KEY = "unsloth_auth_must_change_password";
 
 type PostAuthRoute = "/onboarding" | "/studio" | "/change-password" | "/chat";
 
@@ -42,24 +42,24 @@ export function storeAuthTokens(
   if (!canUseStorage()) return;
   localStorage.setItem(AUTH_TOKEN_KEY, accessToken);
   localStorage.setItem(AUTH_REFRESH_TOKEN_KEY, refreshToken);
-  localStorage.setItem(AUTH_MUST_CHANGE_PASSWORD_KEY, String(mustChangePassword));
+  localStorage.setItem(AUTH_MUST_CHANGE_CREDENTIALS_KEY, String(mustChangePassword));
 }
 
 export function clearAuthTokens(): void {
   if (!canUseStorage()) return;
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(AUTH_REFRESH_TOKEN_KEY);
-  localStorage.removeItem(AUTH_MUST_CHANGE_PASSWORD_KEY);
+  localStorage.removeItem(AUTH_MUST_CHANGE_CREDENTIALS_KEY);
 }
 
 export function mustChangePassword(): boolean {
   if (!canUseStorage()) return false;
-  return localStorage.getItem(AUTH_MUST_CHANGE_PASSWORD_KEY) === "true";
+  return localStorage.getItem(AUTH_MUST_CHANGE_CREDENTIALS_KEY) === "true";
 }
 
 export function setMustChangePassword(required: boolean): void {
   if (!canUseStorage()) return;
-  localStorage.setItem(AUTH_MUST_CHANGE_PASSWORD_KEY, String(required));
+  localStorage.setItem(AUTH_MUST_CHANGE_CREDENTIALS_KEY, String(required));
 }
 
 export function isOnboardingDone(): boolean {
