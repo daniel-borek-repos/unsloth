@@ -55,7 +55,7 @@ class Subscription:
         body = json.dumps(event, separators = (",", ":"), ensure_ascii = False)
         event_type = event.get("type") or "message"
         return (
-            f"id: {event_id}\n" f"event: {event_type}\n" f"data: {body}\n\n"
+            f"id: {event_id}\nevent: {event_type}\ndata: {body}\n\n"
         ).encode("utf-8")
 
 
