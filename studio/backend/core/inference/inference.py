@@ -28,6 +28,10 @@ from loggers import get_logger
 logger = get_logger(__name__)
 
 
+class ModelLoadError(RuntimeError):
+    """Raised when a model fails to load."""
+
+
 class HarmonyTextStreamer:
     """Streaming text decoder for gpt-oss harmony channel protocol.
 
