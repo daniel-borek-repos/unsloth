@@ -1040,6 +1040,7 @@ class InferenceBackend:
                 top_p = top_p,
                 top_k = top_k,
                 min_p = min_p,
+                repetition_penalty = repetition_penalty,
             )
 
             err: dict[str, str] = {}
