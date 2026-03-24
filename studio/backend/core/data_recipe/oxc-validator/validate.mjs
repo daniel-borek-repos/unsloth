@@ -570,7 +570,9 @@ async function main() {
   process.stdout.write(JSON.stringify(out));
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   process.stderr.write(String(error?.stack || error));
   process.exit(1);
-});
+}
