@@ -1167,6 +1167,7 @@ class InferenceBackend:
                 max_new_tokens = max_new_tokens,
                 use_cache = True,
                 do_sample = False,
+                repetition_penalty = repetition_penalty,
             )
 
             err: dict[str, str] = {}
