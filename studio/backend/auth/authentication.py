@@ -10,6 +10,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import jwt
 
 from .storage import (
+    get_all_jwt_secrets,
     get_jwt_secret,
     get_user_and_secret,
     load_jwt_secret,
@@ -34,17 +35,26 @@ def _get_secret_for_subject(subject: str) -> str:
     return secret
 
 
-def _decode_subject_without_verification(token: str) -> Optional[str]:
-    try:
-        payload = jwt.decode(
-            token,
-            options = {"verify_signature": False, "verify_exp": False},
-        )
-    except jwt.InvalidTokenError:
-        return None
+def _decode_verified_subject(token: str) -> Optional[str]:
+    """Decode the JWT by trying each known user's secret and return the subject.
 
-    subject = payload.get("sub")
-    return subject if isinstance(subject, str) else None
+    Returns the subject (username) only when the token's signature is
+    successfully verified against one of the stored per-user secrets.
+    """
+    for username, secret in get_all_jwt_secrets():
+        try:
+            payload = jwt.decode(
+                token,
+                secret,
+                algorithms = [ALGORITHM],
+                options = {"verify_exp": False},
+            )
+            subject = payload.get("sub")
+            if isinstance(subject, str):
+                return subject
+        except jwt.InvalidTokenError:
+            continue
+    return None
 
 
 def create_access_token(
@@ -137,7 +147,7 @@ async def _get_current_subject(
             ...
     """
     token = credentials.credentials
-    subject = _decode_subject_without_verification(token)
+    subject = _decode_verified_subject(token)
     if subject is None:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
