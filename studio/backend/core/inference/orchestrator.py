@@ -39,6 +39,9 @@ _DISPATCH_STOP_TIMEOUT = 5.0
 _DISPATCH_IDLE_TIMEOUT = 30.0
 _DISPATCH_DRAIN_TIMEOUT = 5.0
 
+# Shared error messages (avoid duplicated string literals â€” S1192)
+_ERR_SUBPROCESS_NOT_RUNNING = "Error: Inference subprocess is not running"
+
 
 class InferenceOrchestrator:
     """
@@ -433,7 +436,7 @@ class InferenceOrchestrator:
         the orchestrator-level lock contention.
         """
         if not self._ensure_subprocess_alive():
-            yield "Error: Inference subprocess is not running"
+            yield _ERR_SUBPROCESS_NOT_RUNNING
             return
 
         if not self.active_model_name:
@@ -746,7 +749,7 @@ class InferenceOrchestrator:
         tokens off the shared resp_queue.
         """
         if not self._ensure_subprocess_alive():
-            yield "Error: Inference subprocess is not running"
+            yield _ERR_SUBPROCESS_NOT_RUNNING
             return
 
         if not self.active_model_name:
@@ -1006,7 +1009,7 @@ class InferenceOrchestrator:
     ) -> Generator[str, None, None]:
         """Shared inner logic for audio input generation (Whisper + ASR)."""
         if not self._ensure_subprocess_alive():
-            yield "Error: Inference subprocess is not running"
+            yield _ERR_SUBPROCESS_NOT_RUNNING
             return
         if not self.active_model_name:
             yield "Error: No active model"
