@@ -1165,6 +1165,11 @@ class InferenceBackend:
                 **inputs,
                 streamer = streamer,
                 max_new_tokens = max_new_tokens,
+                temperature = temperature,
+                top_p = top_p,
+                top_k = top_k,
+                min_p = min_p,
+                repetition_penalty = repetition_penalty,
                 use_cache = True,
                 do_sample = False,
             )
