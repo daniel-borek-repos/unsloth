@@ -27,6 +27,10 @@ import httpx
 
 logger = get_logger(__name__)
 
+# Constants for thinking/reasoning tag markers used in streaming responses
+THINK_OPEN_TAG = "<think>"
+THINK_CLOSE_TAG = "</think>"
+
 
 class LlamaCppBackend:
     """
@@ -1527,7 +1531,7 @@ class LlamaCppBackend:
                                 if in_thinking:
                                     if has_content_tokens:
                                         # Real thinking + content: close the tag
-                                        cumulative += "</think>"
+                                        cumulative += THINK_CLOSE_TAG
                                         yield cumulative
                                     else:
                                         # Only reasoning_content, no content tokens:
@@ -1553,7 +1557,7 @@ class LlamaCppBackend:
                                     if reasoning:
                                         reasoning_text += reasoning
                                         if not in_thinking:
-                                            cumulative += "<think>"
+                                            cumulative += THINK_OPEN_TAG
                                             in_thinking = True
                                         cumulative += reasoning
                                         yield cumulative
@@ -1562,7 +1566,7 @@ class LlamaCppBackend:
                                     if token:
                                         has_content_tokens = True
                                         if in_thinking:
-                                            cumulative += "</think>"
+                                            cumulative += THINK_CLOSE_TAG
                                             in_thinking = False
                                         cumulative += token
                                         yield cumulative
@@ -1889,7 +1893,7 @@ class LlamaCppBackend:
                             if line == "data: [DONE]":
                                 if in_thinking:
                                     if has_content_tokens:
-                                        cumulative += "</think>"
+                                        cumulative += THINK_CLOSE_TAG
                                         yield {
                                             "type": "content",
                                             "text": _strip_tool_markup(
@@ -1913,7 +1917,7 @@ class LlamaCppBackend:
                                     if reasoning:
                                         reasoning_text += reasoning
                                         if not in_thinking:
-                                            cumulative += "<think>"
+                                            cumulative += THINK_OPEN_TAG
                                             in_thinking = True
                                         cumulative += reasoning
                                         yield {"type": "content", "text": cumulative}
@@ -1922,7 +1926,7 @@ class LlamaCppBackend:
                                     if token:
                                         has_content_tokens = True
                                         if in_thinking:
-                                            cumulative += "</think>"
+                                            cumulative += THINK_CLOSE_TAG
                                             in_thinking = False
                                         cumulative += token
                                         cleaned = _strip_tool_markup(cumulative)
