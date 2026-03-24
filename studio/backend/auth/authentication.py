@@ -20,6 +20,7 @@ from .storage import (
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 7
+INVALID_TOKEN_MESSAGE = "Invalid or expired token"
 
 security = HTTPBearer()  # Reads Authorization: Bearer <token>
 
@@ -29,7 +30,7 @@ def _get_secret_for_subject(subject: str) -> str:
     if secret is None:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail = INVALID_TOKEN_MESSAGE,
         )
     return secret
 
@@ -148,7 +149,7 @@ async def _get_current_subject(
     if record is None:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail = INVALID_TOKEN_MESSAGE,
         )
 
     _salt, _pwd_hash, jwt_secret, must_change_password = record
@@ -168,5 +169,5 @@ async def _get_current_subject(
     except jwt.InvalidTokenError:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail = INVALID_TOKEN_MESSAGE,
         )
