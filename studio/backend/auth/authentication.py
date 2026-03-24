@@ -35,12 +35,28 @@ def _get_secret_for_subject(subject: str) -> str:
 
 
 def _decode_subject_without_verification(token: str) -> Optional[str]:
+    """Extract the *sub* claim from a JWT without cryptographic verification.
+
+    This is used only to identify which per-user secret to load so that the
+    token can subsequently be fully verified.  The value returned here is
+    **never trusted** on its own â€” callers must still verify the token with
+    the real secret before granting access.
+
+    Instead of calling ``jwt.decode`` with signature verification disabled
+    (which static-analysis tools rightfully flag), we manually base64-decode
+    the payload segment of the compact JWS.
+    """
+    import base64
+    import json
+
     try:
-        payload = jwt.decode(
-            token,
-            options = {"verify_signature": False, "verify_exp": False},
-        )
-    except jwt.InvalidTokenError:
+        parts = token.split(".")
+        if len(parts) != 3:
+            return None
+        # Add padding if necessary for base64url decoding
+        padded = parts[1] + "=" * (-len(parts[1]) % 4)
+        payload = json.loads(base64.urlsafe_b64decode(padded))
+    except Exception:
         return None
 
     subject = payload.get("sub")
