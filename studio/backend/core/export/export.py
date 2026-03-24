@@ -91,6 +91,8 @@ This {model_type} model was trained 2x faster with [Unsloth](https://github.com/
 [<img src="https://raw.githubusercontent.com/unslothai/unsloth/main/images/unsloth%20made%20with%20love.png" width="200"/>](https://github.com/unslothai/unsloth)
 """
 
+_MSG_NO_MODEL_LOADED = "No model loaded. Please select a checkpoint first."
+
 
 class ExportBackend:
     """Handles model export operations"""
@@ -326,7 +328,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if not self.is_peft:
             return False, "This is not a PEFT model. Use 'Export Base Model' instead."
@@ -403,7 +405,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if self.is_peft:
             return (
@@ -505,7 +507,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         try:
             # Convert quantization method to lowercase for unsloth
@@ -623,7 +625,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if not self.is_peft:
             return False, "This is not a PEFT model. No adapter to export."
