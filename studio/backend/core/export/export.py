@@ -28,6 +28,8 @@ from core.inference import get_inference_backend
 
 logger = get_logger(__name__)
 
+_MSG_NO_MODEL_LOADED = "No model loaded. Please select a checkpoint first."
+
 
 def _is_wsl():
     """Detect if running under Windows Subsystem for Linux."""
@@ -326,7 +328,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if not self.is_peft:
             return False, "This is not a PEFT model. Use 'Export Base Model' instead."
@@ -403,7 +405,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if self.is_peft:
             return (
@@ -505,7 +507,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         try:
             # Convert quantization method to lowercase for unsloth
@@ -623,7 +625,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if not self.is_peft:
             return False, "This is not a PEFT model. No adapter to export."
