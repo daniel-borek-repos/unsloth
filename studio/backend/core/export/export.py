@@ -60,7 +60,7 @@ def _apply_wsl_sudo_patch():
 
         llama_cpp_module.do_we_need_sudo = _wsl_do_we_need_sudo
         logger.info(
-            "Applied WSL sudo patch to " "unsloth_zoo.llama_cpp.do_we_need_sudo"
+            "Applied WSL sudo patch to unsloth_zoo.llama_cpp.do_we_need_sudo"
         )
     except Exception as e:
         logger.warning(f"Could not apply WSL sudo patch: {e}")
