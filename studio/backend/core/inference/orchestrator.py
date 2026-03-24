@@ -39,6 +39,9 @@ _DISPATCH_STOP_TIMEOUT = 5.0
 _DISPATCH_IDLE_TIMEOUT = 30.0
 _DISPATCH_DRAIN_TIMEOUT = 5.0
 
+# Common error messages (defined once to avoid duplication â€” S1192)
+_ERR_NO_ACTIVE_MODEL = "Error: No active model"
+
 
 class InferenceOrchestrator:
     """
@@ -437,7 +440,7 @@ class InferenceOrchestrator:
             return
 
         if not self.active_model_name:
-            yield "Error: No active model"
+            yield _ERR_NO_ACTIVE_MODEL
             return
 
         # Ensure dispatcher is running
@@ -750,7 +753,7 @@ class InferenceOrchestrator:
             return
 
         if not self.active_model_name:
-            yield "Error: No active model"
+            yield _ERR_NO_ACTIVE_MODEL
             return
 
         # If the dispatcher is running (from a previous compare-mode request),
@@ -1009,7 +1012,7 @@ class InferenceOrchestrator:
             yield "Error: Inference subprocess is not running"
             return
         if not self.active_model_name:
-            yield "Error: No active model"
+            yield _ERR_NO_ACTIVE_MODEL
             return
 
         with self._gen_lock:
