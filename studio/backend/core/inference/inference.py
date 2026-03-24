@@ -1165,6 +1165,7 @@ class InferenceBackend:
                 **inputs,
                 streamer = streamer,
                 max_new_tokens = max_new_tokens,
+                min_p = min_p,
                 use_cache = True,
                 do_sample = False,
             )
