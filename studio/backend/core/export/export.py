@@ -28,6 +28,8 @@ from core.inference import get_inference_backend
 
 logger = get_logger(__name__)
 
+HUB_UPLOAD_REQUIRED_MSG = "Repository ID and Hugging Face token required for Hub upload"
+
 
 def _is_wsl():
     """Detect if running under Windows Subsystem for Linux."""
@@ -60,7 +62,7 @@ def _apply_wsl_sudo_patch():
 
         llama_cpp_module.do_we_need_sudo = _wsl_do_we_need_sudo
         logger.info(
-            "Applied WSL sudo patch to " "unsloth_zoo.llama_cpp.do_we_need_sudo"
+            "Applied WSL sudo patch to unsloth_zoo.llama_cpp.do_we_need_sudo"
         )
     except Exception as e:
         logger.warning(f"Could not apply WSL sudo patch: {e}")
@@ -90,6 +92,9 @@ This {model_type} model was trained 2x faster with [Unsloth](https://github.com/
 
 [<img src="https://raw.githubusercontent.com/unslothai/unsloth/main/images/unsloth%20made%20with%20love.png" width="200"/>](https://github.com/unslothai/unsloth)
 """
+
+
+_MSG_NO_MODEL_LOADED = "No model loaded. Please select a checkpoint first."
 
 
 class ExportBackend:
@@ -326,7 +331,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if not self.is_peft:
             return False, "This is not a PEFT model. Use 'Export Base Model' instead."
@@ -360,7 +365,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing merged model to Hub: {repo_id}")
@@ -403,7 +408,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if self.is_peft:
             return (
@@ -430,7 +435,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing base model to Hub: {repo_id}")
@@ -505,7 +510,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         try:
             # Convert quantization method to lowercase for unsloth
@@ -558,7 +563,7 @@ class ExportBackend:
                 # Flatten any .gguf files from subdirectories into abs_save_dir.
                 # save_pretrained_gguf may create subdirs (e.g. model_gguf/)
                 # with a name different from model_save_path.
-                for sub in list(Path(abs_save_dir).iterdir()):
+                for sub in Path(abs_save_dir).iterdir():
                     if not sub.is_dir():
                         continue
                     for src in sub.glob("*.gguf"):
@@ -586,7 +591,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing GGUF model to Hub: {repo_id}")
@@ -623,7 +628,7 @@ class ExportBackend:
             Tuple of (success: bool, message: str)
         """
         if not self.current_model or not self.current_tokenizer:
-            return False, "No model loaded. Please select a checkpoint first."
+            return False, _MSG_NO_MODEL_LOADED
 
         if not self.is_peft:
             return False, "This is not a PEFT model. No adapter to export."
@@ -644,7 +649,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing LoRA adapter to Hub: {repo_id}")

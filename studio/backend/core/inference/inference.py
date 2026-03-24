@@ -57,7 +57,7 @@ class HarmonyTextStreamer:
     import re as _re
 
     _HARMONY_RE = _re.compile(
-        r"<\|channel\|>(\w+)<\|message\|>(.*?)(?=<\|end\|>|<\|channel\|>|\Z)",
+        r"<\|channel\|>(\w+)<\|message\|>(.*)(?=<\|end\|>|<\|channel\|>|\Z)",
         _re.DOTALL,
     )
 
@@ -200,6 +200,10 @@ class HarmonyTextStreamer:
                 if new_content:
                     self._final_emitted = len(content)
                     self._queue.put(new_content)
+
+
+class ModelLoadError(Exception):
+    """Raised when a model fails to load."""
 
 
 class InferenceBackend:
@@ -526,7 +530,7 @@ class InferenceBackend:
                 del self.models[model_name]
             self.loading_models.discard(model_name)
 
-            raise Exception(error_msg)
+            raise ModelLoadError(error_msg)
 
     def unload_model(self, model_name: str) -> bool:
         """
@@ -1165,8 +1169,10 @@ class InferenceBackend:
                 **inputs,
                 streamer = streamer,
                 max_new_tokens = max_new_tokens,
+                repetition_penalty = repetition_penalty,
                 use_cache = True,
                 do_sample = False,
+                repetition_penalty = repetition_penalty,
             )
 
             err: dict[str, str] = {}
