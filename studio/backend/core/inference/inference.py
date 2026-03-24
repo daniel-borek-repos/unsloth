@@ -1160,14 +1160,22 @@ class InferenceBackend:
                 timeout = 0.2,
             )
 
-            # Notebook uses do_sample=False for ASR (greedy decoding for accuracy)
+            # Use greedy decoding by default for ASR accuracy; allow sampling if temperature > 0
+            do_sample = temperature is not None and temperature > 0
             generation_kwargs = dict(
                 **inputs,
                 streamer = streamer,
                 max_new_tokens = max_new_tokens,
                 use_cache = True,
-                do_sample = False,
+                do_sample = do_sample,
+                temperature = temperature if do_sample else None,
+                top_p = top_p if do_sample else None,
+                top_k = top_k if do_sample else None,
+                min_p = min_p if do_sample else None,
+                repetition_penalty = repetition_penalty,
             )
+            # Remove None-valued keys so they don't override model defaults
+            generation_kwargs = {k: v for k, v in generation_kwargs.items() if v is not None}
 
             err: dict[str, str] = {}
 
