@@ -202,6 +202,10 @@ class HarmonyTextStreamer:
                     self._queue.put(new_content)
 
 
+class ModelLoadError(Exception):
+    """Raised when a model fails to load."""
+
+
 class InferenceBackend:
     """Unified inference backend supporting text, vision, and LoRA models"""
 
@@ -526,7 +530,7 @@ class InferenceBackend:
                 del self.models[model_name]
             self.loading_models.discard(model_name)
 
-            raise Exception(error_msg)
+            raise ModelLoadError(error_msg)
 
     def unload_model(self, model_name: str) -> bool:
         """
