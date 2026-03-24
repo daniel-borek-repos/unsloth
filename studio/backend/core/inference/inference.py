@@ -1167,6 +1167,7 @@ class InferenceBackend:
                 max_new_tokens = max_new_tokens,
                 use_cache = True,
                 do_sample = False,
+                repetition_penalty = repetition_penalty,
             )
 
             err: dict[str, str] = {}
@@ -1187,7 +1188,6 @@ class InferenceBackend:
             thread = threading.Thread(target = generate_fn)
             thread.start()
 
-            output = ""
             try:
                 while True:
                     if cancel_event is not None and cancel_event.is_set():
@@ -1201,7 +1201,6 @@ class InferenceBackend:
                             break
                         continue
                     if new_token:
-                        output += new_token
                         yield new_token
             finally:
                 if cancel_event is not None:
