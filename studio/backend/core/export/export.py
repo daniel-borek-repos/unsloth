@@ -28,6 +28,8 @@ from core.inference import get_inference_backend
 
 logger = get_logger(__name__)
 
+HUB_UPLOAD_REQUIRED_MSG = "Repository ID and Hugging Face token required for Hub upload"
+
 
 def _is_wsl():
     """Detect if running under Windows Subsystem for Linux."""
@@ -363,7 +365,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing merged model to Hub: {repo_id}")
@@ -433,7 +435,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing base model to Hub: {repo_id}")
@@ -589,7 +591,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing GGUF model to Hub: {repo_id}")
@@ -647,7 +649,7 @@ class ExportBackend:
                 if not repo_id or not hf_token:
                     return (
                         False,
-                        "Repository ID and Hugging Face token required for Hub upload",
+                        HUB_UPLOAD_REQUIRED_MSG,
                     )
 
                 logger.info(f"Pushing LoRA adapter to Hub: {repo_id}")
