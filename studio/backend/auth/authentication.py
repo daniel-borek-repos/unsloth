@@ -21,6 +21,7 @@ from .storage import (
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 7
+INVALID_OR_EXPIRED_TOKEN = "Invalid or expired token"
 
 security = HTTPBearer()  # Reads Authorization: Bearer <token>
 
@@ -30,7 +31,7 @@ def _get_secret_for_subject(subject: str) -> str:
     if secret is None:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail = INVALID_OR_EXPIRED_TOKEN,
         )
     return secret
 
@@ -112,27 +113,27 @@ def reload_secret() -> None:
     load_jwt_secret()
 
 
-async def get_current_subject(
+def get_current_subject(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> str:
     """Validate JWT and require the password-change flow to be completed."""
-    return await _get_current_subject(
+    return _get_current_subject(
         credentials,
         allow_password_change = False,
     )
 
 
-async def get_current_subject_allow_password_change(
+def get_current_subject_allow_password_change(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> str:
     """Validate JWT but allow access to the password-change endpoint."""
-    return await _get_current_subject(
+    return _get_current_subject(
         credentials,
         allow_password_change = True,
     )
 
 
-async def _get_current_subject(
+def _get_current_subject(
     credentials: HTTPAuthorizationCredentials,
     *,
     allow_password_change: bool,
@@ -158,7 +159,7 @@ async def _get_current_subject(
     if record is None:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail = INVALID_OR_EXPIRED_TOKEN,
         )
 
     _salt, _pwd_hash, jwt_secret, must_change_password = record
@@ -178,5 +179,5 @@ async def _get_current_subject(
     except jwt.InvalidTokenError:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail = INVALID_OR_EXPIRED_TOKEN,
         )
