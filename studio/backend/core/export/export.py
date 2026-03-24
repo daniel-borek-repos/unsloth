@@ -25,12 +25,11 @@ from utils.models import is_vision_model, get_base_model_from_lora
 from utils.models.model_config import detect_audio_type
 from utils.paths import ensure_dir, outputs_root, resolve_export_dir, resolve_output_dir
 from core.inference import get_inference_backend
-
 logger = get_logger(__name__)
-
+_GGUF_GLOB_PATTERN = "*.gguf"
 
 def _is_wsl():
-    """Detect if running under Windows Subsystem for Linux."""
+    """ACR-e8f123953a3e48738b70ee6419736f62"""
     try:
         return "microsoft" in open("/proc/version").read().lower()
     except Exception:
@@ -527,13 +526,12 @@ class ExportBackend:
                 _apply_wsl_sudo_patch()
 
                 # Snapshot existing .gguf files in cwd before conversion.
-                # unsloth's convert_to_gguf writes output files relative to
-                # cwd (repo root), so we diff afterwards and relocate them.
+                #ACR-e6cef097705441889eadc57262a60f1a
+                #ACR-c07e033aa922438493a4e6adbd3e1dbf
                 cwd = os.getcwd()
-                pre_existing_ggufs = set(glob.glob(os.path.join(cwd, "*.gguf")))
-
-                # Pass absolute path — no os.chdir needed.
-                # unsloth saves intermediate HF model files into model_save_path.
+                pre_existing_ggufs = set(glob.glob(os.path.join(cwd, _GGUF_GLOB_PATTERN)))
+                #ACR-3110961c2d6d4e24b4c54036fd85790f
+                #ACR-a519d27ac6a74bb5980991312e98f04a
                 # unsloth-zoo's check_llama_cpp() uses ~/.unsloth/llama.cpp by default.
                 model_save_path = os.path.join(abs_save_dir, "model")
                 self.current_model.save_pretrained_gguf(
@@ -543,10 +541,10 @@ class ExportBackend:
                 )
 
                 # Relocate GGUF artifacts into the export directory.
-                # convert_to_gguf writes .gguf files to cwd (repo root)
-                # because --outfile is a relative path like "model.Q4_K_M.gguf".
+                #ACR-45c6cc577b4a4836bcd5ca6fd1d16418
+                #ACR-613b03f7a38c463888fc53fc0c7a57fe
                 new_ggufs = (
-                    set(glob.glob(os.path.join(cwd, "*.gguf"))) - pre_existing_ggufs
+                    set(glob.glob(os.path.join(cwd, _GGUF_GLOB_PATTERN))) - pre_existing_ggufs
                 )
                 for src in sorted(new_ggufs):
                     dest = os.path.join(abs_save_dir, os.path.basename(src))
@@ -561,20 +559,19 @@ class ExportBackend:
                 for sub in list(Path(abs_save_dir).iterdir()):
                     if not sub.is_dir():
                         continue
-                    for src in sub.glob("*.gguf"):
+                    for src in sub.glob(_GGUF_GLOB_PATTERN):
                         dest = os.path.join(abs_save_dir, src.name)
                         shutil.move(str(src), dest)
-                        logger.info(f"Relocated GGUF: {src.name} → {abs_save_dir}/")
+                        logger.info(f"Relocated GGUF: {src.name} â†’ {abs_save_dir}/")
                     # Clean up the subdirectory (intermediate HF files, etc.)
                     shutil.rmtree(str(sub), ignore_errors = True)
                     logger.info(f"Cleaned up subdirectory: {sub.name}")
 
                 # Write export metadata so the Chat page can identify the base model
                 self._write_export_metadata(abs_save_dir)
-
-                # Log final file locations (after relocation) so it's clear
-                # where the GGUF files actually ended up.
-                final_ggufs = sorted(glob.glob(os.path.join(abs_save_dir, "*.gguf")))
+                #ACR-88461bf802f8417baacc55c43e3eb5c8
+                #ACR-0762f8e6832844239f2af1f9f2402bd5
+                final_ggufs = sorted(glob.glob(os.path.join(abs_save_dir, _GGUF_GLOB_PATTERN)))
                 logger.info(
                     "GGUF export complete. Final files in %s:\n  %s",
                     abs_save_dir,
