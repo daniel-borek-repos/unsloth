@@ -57,7 +57,7 @@ class HarmonyTextStreamer:
     import re as _re
 
     _HARMONY_RE = _re.compile(
-        r"<\|channel\|>(\w+)<\|message\|>(.*?)(?=<\|end\|>|<\|channel\|>|\Z)",
+        r"<\|channel\|>(\w+)<\|message\|>(.*)(?=<\|end\|>|<\|channel\|>|\Z)",
         _re.DOTALL,
     )
 
