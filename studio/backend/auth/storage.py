@@ -214,6 +214,16 @@ def get_jwt_secret(username: str) -> Optional[str]:
         conn.close()
 
 
+def get_all_jwt_secrets() -> list:
+    """Return a list of (username, jwt_secret) tuples for all users."""
+    conn = get_connection()
+    try:
+        cur = conn.execute("SELECT username, jwt_secret FROM auth_user")
+        return [(row["username"], row["jwt_secret"]) for row in cur.fetchall()]
+    finally:
+        conn.close()
+
+
 def requires_password_change(username: str) -> bool:
     """Return whether the user must change the seeded default password."""
     conn = get_connection()
