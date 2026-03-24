@@ -382,9 +382,10 @@ class JobManager:
             try:
                 events.append(coerce_event(q.get_nowait()))
             except queue.Empty:
-                return events
+                break
             except (EOFError, OSError, ValueError):
-                return events
+                break
+        return events
 
     def _pump_loop(self) -> None:
         """Background thread: consumes worker events + updates job snapshot."""
