@@ -60,7 +60,7 @@ def _apply_wsl_sudo_patch():
 
         llama_cpp_module.do_we_need_sudo = _wsl_do_we_need_sudo
         logger.info(
-            "Applied WSL sudo patch to " "unsloth_zoo.llama_cpp.do_we_need_sudo"
+            "Applied WSL sudo patch to unsloth_zoo.llama_cpp.do_we_need_sudo"
         )
     except Exception as e:
         logger.warning(f"Could not apply WSL sudo patch: {e}")
@@ -558,7 +558,7 @@ class ExportBackend:
                 # Flatten any .gguf files from subdirectories into abs_save_dir.
                 # save_pretrained_gguf may create subdirs (e.g. model_gguf/)
                 # with a name different from model_save_path.
-                for sub in list(Path(abs_save_dir).iterdir()):
+                for sub in Path(abs_save_dir).iterdir():
                     if not sub.is_dir():
                         continue
                     for src in sub.glob("*.gguf"):
