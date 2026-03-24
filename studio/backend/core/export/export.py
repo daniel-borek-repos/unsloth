@@ -558,7 +558,7 @@ class ExportBackend:
                 # Flatten any .gguf files from subdirectories into abs_save_dir.
                 # save_pretrained_gguf may create subdirs (e.g. model_gguf/)
                 # with a name different from model_save_path.
-                for sub in list(Path(abs_save_dir).iterdir()):
+                for sub in Path(abs_save_dir).iterdir():
                     if not sub.is_dir():
                         continue
                     for src in sub.glob("*.gguf"):
