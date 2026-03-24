@@ -27,6 +27,8 @@ import httpx
 
 logger = get_logger(__name__)
 
+_GGUF_EXT = ".gguf"
+
 
 class LlamaCppBackend:
     """
@@ -340,7 +342,7 @@ class LlamaCppBackend:
 
             files = list_repo_files(hf_repo, token = hf_token)
             gguf_files = [
-                f for f in files if f.endswith(".gguf") and "mmproj" not in f.lower()
+                f for f in files if f.endswith(_GGUF_EXT) and "mmproj" not in f.lower()
             ]
             if not gguf_files:
                 return None
@@ -569,7 +571,7 @@ class LlamaCppBackend:
                 gguf_files = sorted(
                     f
                     for f in files
-                    if f.endswith(".gguf") and boundary.search(f.lower())
+                    if f.endswith(_GGUF_EXT) and boundary.search(f.lower())
                 )
                 if gguf_files:
                     gguf_filename = gguf_files[0]
@@ -715,7 +717,7 @@ class LlamaCppBackend:
 
             files = list_repo_files(hf_repo, token = hf_token)
             mmproj_files = sorted(
-                f for f in files if f.endswith(".gguf") and "mmproj" in f.lower()
+                f for f in files if f.endswith(_GGUF_EXT) and "mmproj" in f.lower()
             )
             if not mmproj_files:
                 return None
