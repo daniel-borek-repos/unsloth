@@ -526,7 +526,7 @@ class InferenceBackend:
                 del self.models[model_name]
             self.loading_models.discard(model_name)
 
-            raise Exception(error_msg)
+            raise RuntimeError(error_msg)
 
     def unload_model(self, model_name: str) -> bool:
         """
