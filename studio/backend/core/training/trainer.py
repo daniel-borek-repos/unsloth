@@ -554,9 +554,12 @@ class UnslothTrainer:
             model_display = (
                 model_name.split("/")[-1] if "/" in model_name else model_name
             )
-            model_type_label = (
-                "audio" if self.is_audio else ("vision" if self.is_vlm else "text")
-            )
+            if self.is_audio:
+                model_type_label = "audio"
+            elif self.is_vlm:
+                model_type_label = "vision"
+            else:
+                model_type_label = "text"
             self._update_progress(
                 status_message = f"Loading {model_type_label} model... {model_display}"
             )
