@@ -143,16 +143,16 @@ def _handle_load(backend, config: dict, resp_queue: Any) -> None:
                             "adapter_config.json says qlora — setting load_in_4bit=True"
                         )
                         load_in_4bit = True
-                    elif not training_method:
-                        if (
-                            mc.base_model
-                            and "-bnb-4bit" not in mc.base_model.lower()
-                            and load_in_4bit
-                        ):
-                            logger.info(
-                                "No training method, base model has no -bnb-4bit — setting load_in_4bit=False"
-                            )
-                            load_in_4bit = False
+                    elif (
+                        not training_method
+                        and mc.base_model
+                        and "-bnb-4bit" not in mc.base_model.lower()
+                        and load_in_4bit
+                    ):
+                        logger.info(
+                            "No training method, base model has no -bnb-4bit — setting load_in_4bit=False"
+                        )
+                        load_in_4bit = False
                 except Exception as e:
                     logger.warning("Could not read adapter_config.json: %s", e)
 
