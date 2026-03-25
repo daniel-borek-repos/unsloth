@@ -1575,7 +1575,7 @@ class LlamaCppBackend:
 
         except httpx.ConnectError:
             raise RuntimeError("Lost connection to llama-server")
-        except Exception as e:
+        except Exception:
             if cancel_event is not None and cancel_event.is_set():
                 return
             raise
