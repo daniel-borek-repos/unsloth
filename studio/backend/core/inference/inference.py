@@ -1719,7 +1719,7 @@ class InferenceBackend:
                 or "no template argument" in error_msg
             ):
                 logger.info(
-                    f"Base model detected - no built-in chat template available, using fallback formatting"
+                    "Base model detected - no built-in chat template available, using fallback formatting"
                 )
             else:
                 logger.warning(f"Failed to apply tokenizer chat template: {e}")
