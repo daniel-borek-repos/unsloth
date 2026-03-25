@@ -234,15 +234,16 @@ def _check_signal_escape_patterns(code: str):
                         self.signal_aliases.add(alias.asname or alias.name)
             self.generic_visit(node)
 
-        def visit_While(self, node):
+        def _visit_loop(self, node):
             self.loop_depth += 1
             self.generic_visit(node)
             self.loop_depth -= 1
 
+        def visit_While(self, node):
+            self._visit_loop(node)
+
         def visit_For(self, node):
-            self.loop_depth += 1
-            self.generic_visit(node)
-            self.loop_depth -= 1
+            self._visit_loop(node)
 
         def visit_Call(self, node):
             func = node.func
