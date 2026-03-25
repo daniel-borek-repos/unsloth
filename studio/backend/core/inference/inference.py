@@ -1847,7 +1847,7 @@ class InferenceBackend:
         formatted += "<|im_start|>assistant\n"
         return formatted
 
-    def _format_alpaca_template(self, messages: list, special_tokens: dict) -> str:
+    def _format_alpaca_template(self, messages: list, _special_tokens: dict) -> str:
         """Format messages using Alpaca template"""
         formatted = ""
         system_msg = None
