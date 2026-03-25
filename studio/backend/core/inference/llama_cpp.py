@@ -13,6 +13,7 @@ import contextlib
 import json
 import struct
 import structlog
+from dataclasses import dataclass, field
 from loggers import get_logger
 import shutil
 import signal
@@ -29,6 +30,20 @@ logger = get_logger(__name__)
 
 _GGUF_EXT = ".gguf"
 _THINK_CLOSE_TAG = "</think>"
+
+
+@dataclass
+class SamplingParams:
+    """Groups sampling-related parameters for chat completion requests."""
+
+    temperature: float = 0.6
+    top_p: float = 0.95
+    top_k: int = 20
+    min_p: float = 0.01
+    max_tokens: Optional[int] = None
+    repetition_penalty: float = 1.0
+    presence_penalty: float = 0.0
+    stop: Optional[list[str]] = None
 
 
 class LlamaCppBackend:
@@ -1588,14 +1603,7 @@ class LlamaCppBackend:
         self,
         messages: list[dict],
         tools: list[dict],
-        temperature: float = 0.6,
-        top_p: float = 0.95,
-        top_k: int = 20,
-        min_p: float = 0.01,
-        max_tokens: Optional[int] = None,
-        repetition_penalty: float = 1.0,
-        presence_penalty: float = 0.0,
-        stop: Optional[list[str]] = None,
+        sampling: Optional[SamplingParams] = None,
         cancel_event: Optional[threading.Event] = None,
         enable_thinking: Optional[bool] = None,
         max_tool_iterations: int = 10,
@@ -1612,6 +1620,18 @@ class LlamaCppBackend:
           {"type": "reasoning", "text": "token"}          -- streamed reasoning tokens (cumulative)
         """
         from core.inference.tools import execute_tool
+
+        if sampling is None:
+            sampling = SamplingParams()
+
+        temperature = sampling.temperature
+        top_p = sampling.top_p
+        top_k = sampling.top_k
+        min_p = sampling.min_p
+        max_tokens = sampling.max_tokens
+        repetition_penalty = sampling.repetition_penalty
+        presence_penalty = sampling.presence_penalty
+        stop = sampling.stop
 
         if not self.is_loaded:
             raise RuntimeError("llama-server is not loaded")
