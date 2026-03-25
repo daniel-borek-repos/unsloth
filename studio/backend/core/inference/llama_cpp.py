@@ -136,6 +136,7 @@ class LlamaCppBackend:
         import sys
 
         binary_name = "llama-server.exe" if sys.platform == "win32" else "llama-server"
+        llama_cpp_dir = "llama.cpp"
 
         # 1. Env var — direct path to binary
         env_path = os.environ.get("LLAMA_SERVER_PATH")
@@ -161,7 +162,7 @@ class LlamaCppBackend:
                     return str(win_bin)
 
         # 2–4. ~/.unsloth/llama.cpp (primary — setup.sh / setup.ps1 build here)
-        unsloth_home = Path.home() / ".unsloth" / "llama.cpp"
+        unsloth_home = Path.home() / ".unsloth" / llama_cpp_dir
         # Root dir (make builds copy binaries here)
         home_root = unsloth_home / binary_name
         if home_root.is_file():
@@ -180,16 +181,16 @@ class LlamaCppBackend:
         # 5–6. Legacy: in-tree build (older setup.sh / setup.ps1 versions)
         project_root = Path(__file__).resolve().parents[4]
         # Root dir (make builds)
-        root_path = project_root / "llama.cpp" / binary_name
+        root_path = project_root / llama_cpp_dir / binary_name
         if root_path.is_file():
             return str(root_path)
         # build/bin/ (cmake builds)
-        build_path = project_root / "llama.cpp" / "build" / "bin" / binary_name
+        build_path = project_root / llama_cpp_dir / "build" / "bin" / binary_name
         if build_path.is_file():
             return str(build_path)
         if sys.platform == "win32":
             win_path = (
-                project_root / "llama.cpp" / "build" / "bin" / "Release" / binary_name
+                project_root / llama_cpp_dir / "build" / "bin" / "Release" / binary_name
             )
             if win_path.is_file():
                 return str(win_path)
