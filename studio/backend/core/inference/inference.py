@@ -1175,9 +1175,9 @@ class InferenceBackend:
                 streamer = streamer,
                 max_new_tokens = max_new_tokens,
                 repetition_penalty = repetition_penalty,
+                min_p = min_p,
                 use_cache = True,
                 do_sample = False,
-                repetition_penalty = repetition_penalty,
             )
 
             err: dict[str, str] = {}
