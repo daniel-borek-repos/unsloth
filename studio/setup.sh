@@ -91,7 +91,7 @@ if [ "$NEED_NODE" = true ]; then
     # ── 2. Install nvm ──
     export NODE_OPTIONS=--dns-result-order=ipv4first # or else fails on colab.
     echo "Installing nvm..."
-    curl -so- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash > /dev/null 2>&1
+    curl --proto "=https" -so- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash > /dev/null 2>&1
 
     # Load nvm (source ~/.bashrc won't work inside a script)
     export NVM_DIR="$HOME/.nvm"
@@ -262,7 +262,7 @@ rm -rf "$VENV_T5_DIR"
 if ! "$BEST_PY" -m venv "$VENV_DIR" 2>/dev/null; then
     "$BEST_PY" -m venv --without-pip "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python > /dev/null
+    curl --proto "=https" -sS https://bootstrap.pypa.io/get-pip.py | python > /dev/null
 else
     source "$VENV_DIR/bin/activate"
 fi
@@ -271,7 +271,7 @@ fi
 USE_UV=false
 if command -v uv &>/dev/null; then
     USE_UV=true
-elif curl -LsSf https://astral.sh/uv/install.sh | sh > /dev/null 2>&1; then
+elif curl --proto "=https" -LsSf https://astral.sh/uv/install.sh | sh > /dev/null 2>&1; then
     export PATH="$HOME/.local/bin:$PATH"
     command -v uv &>/dev/null && USE_UV=true
 fi
