@@ -664,7 +664,7 @@ class InferenceOrchestrator:
                     "model_name": model_name,
                 }
             )
-            resp = self._wait_response("unloaded", timeout = 30)
+            self._wait_response("unloaded", timeout = 30)
 
             # Update local state
             self.models.pop(model_name, None)
