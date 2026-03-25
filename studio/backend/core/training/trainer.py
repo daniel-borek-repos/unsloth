@@ -960,19 +960,19 @@ class UnslothTrainer:
                     logger.info(f"  - Finetune MLP modules: {finetune_mlp_modules}")
                 logger.info()
 
-                peft_kwargs = dict(
-                    r = lora_r,
-                    target_modules = target_modules,
-                    lora_alpha = lora_alpha,
-                    lora_dropout = lora_dropout,
-                    bias = "none",
-                    use_gradient_checkpointing = use_gradient_checkpointing,
-                    random_state = 3407,
-                    use_rslora = use_rslora,
-                    loftq_config = {"loftq_bits": 4, "loftq_iter": 1}
+                peft_kwargs = {
+                    "r": lora_r,
+                    "target_modules": target_modules,
+                    "lora_alpha": lora_alpha,
+                    "lora_dropout": lora_dropout,
+                    "bias": "none",
+                    "use_gradient_checkpointing": use_gradient_checkpointing,
+                    "random_state": 3407,
+                    "use_rslora": use_rslora,
+                    "loftq_config": {"loftq_bits": 4, "loftq_iter": 1}
                     if use_loftq
                     else None,
-                )
+                }
                 # Audio VLM models support VLM-style layer selection
                 if self.is_audio_vlm:
                     peft_kwargs.update(
