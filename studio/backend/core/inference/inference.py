@@ -1823,14 +1823,16 @@ class InferenceBackend:
 
     def _format_chatml_template(self, messages: list, special_tokens: dict) -> str:
         """Format messages using ChatML template"""
+        im_start = special_tokens.get("im_start", "<|im_start|>")
+        im_end = special_tokens.get("im_end", "<|im_end|>")
         formatted = ""
 
         for msg in messages:
             role = msg["role"]
             content = msg["content"]
-            formatted += f"<|im_start|>{role}\n{content}<|im_end|>\n"
+            formatted += f"{im_start}{role}\n{content}{im_end}\n"
 
-        formatted += "<|im_start|>assistant\n"
+        formatted += f"{im_start}assistant\n"
         return formatted
 
     def _format_alpaca_template(self, messages: list, special_tokens: dict) -> str:
