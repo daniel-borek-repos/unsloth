@@ -1730,7 +1730,7 @@ class LlamaCppBackend:
                     if isinstance(raw_args, str):
                         try:
                             arguments = json.loads(raw_args)
-                        except (json.JSONDecodeError, ValueError):
+                        except ValueError:
                             if auto_heal_tool_calls:
                                 arguments = {"query": raw_args}
                             else:
