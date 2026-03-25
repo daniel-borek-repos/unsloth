@@ -762,7 +762,7 @@ class LlamaCppBackend:
         chat_template_override: Optional[str] = None,
         cache_type_kv: Optional[str] = None,
         n_threads: Optional[int] = None,
-        n_gpu_layers: Optional[int] = None,  # Accepted for caller compat, unused
+        _n_gpu_layers: Optional[int] = None,  # Accepted for caller compat, unused
     ) -> bool:
         """
         Start llama-server with a GGUF model.
