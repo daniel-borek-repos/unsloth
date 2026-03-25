@@ -11,6 +11,7 @@ from transformers import TextStreamer
 from peft import PeftModel, PeftModelForCausalLM
 
 import json
+import math
 import sys
 import torch
 from pathlib import Path
@@ -1639,7 +1640,7 @@ class InferenceBackend:
             def __call__(
                 self, input_ids: torch.LongTensor, scores: torch.FloatTensor
             ) -> torch.FloatTensor:
-                if self.penalty_last_n == 0 or self.penalty == 1.0:
+                if self.penalty_last_n == 0 or math.isclose(self.penalty, 1.0):
                     return scores
                 batch_size, seq_len = input_ids.shape
                 vocab_size = scores.shape[-1]
