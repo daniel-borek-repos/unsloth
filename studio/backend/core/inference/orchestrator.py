@@ -41,6 +41,7 @@ _DISPATCH_DRAIN_TIMEOUT = 5.0
 
 # Shared error messages (avoid duplicated string literals â€” S1192)
 _ERR_SUBPROCESS_NOT_RUNNING = "Error: Inference subprocess is not running"
+_ERR_NO_ACTIVE_MODEL = "Error: No active model"
 
 
 class InferenceOrchestrator:
@@ -440,7 +441,7 @@ class InferenceOrchestrator:
             return
 
         if not self.active_model_name:
-            yield "Error: No active model"
+            yield _ERR_NO_ACTIVE_MODEL
             return
 
         # Ensure dispatcher is running
@@ -753,7 +754,7 @@ class InferenceOrchestrator:
             return
 
         if not self.active_model_name:
-            yield "Error: No active model"
+            yield _ERR_NO_ACTIVE_MODEL
             return
 
         # If the dispatcher is running (from a previous compare-mode request),
@@ -1012,7 +1013,7 @@ class InferenceOrchestrator:
             yield _ERR_SUBPROCESS_NOT_RUNNING
             return
         if not self.active_model_name:
-            yield "Error: No active model"
+            yield _ERR_NO_ACTIVE_MODEL
             return
 
         with self._gen_lock:
