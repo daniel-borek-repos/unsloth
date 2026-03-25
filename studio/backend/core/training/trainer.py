@@ -988,7 +988,7 @@ class UnslothTrainer:
                 # Phase 2: Whisper uses FastModel.get_peft_model with task_type=None
                 from unsloth import FastModel
 
-                logger.info(f"Audio model (whisper) LoRA configuration:")
+                logger.info("Audio model (whisper) LoRA configuration:")
                 logger.info(f"  - Target modules: {target_modules}\n")
 
                 self.model = FastModel.get_peft_model(
