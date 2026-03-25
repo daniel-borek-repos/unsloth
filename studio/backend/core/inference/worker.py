@@ -656,7 +656,7 @@ def run_inference_process(
             elif cmd_type == "shutdown":
                 logger.info("Shutdown command received, exiting")
                 # Unload all models
-                for model_name in list(backend.models.keys()):
+                for model_name in [*backend.models]:
                     try:
                         backend.unload_model(model_name)
                     except Exception:
