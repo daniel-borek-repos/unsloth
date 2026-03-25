@@ -786,7 +786,7 @@ class UnslothTrainer:
                 # second attempt because the failed first call's partial
                 # imports clean up the stale state as a side effect.
                 self._source_code_retried = True
-                logger.info(f"\n'could not get source code' — retrying once...\n")
+                logger.info("\n'could not get source code' — retrying once...\n")
                 return self.load_model(
                     model_name = model_name,
                     max_seq_length = max_seq_length,
