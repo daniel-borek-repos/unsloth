@@ -1869,7 +1869,7 @@ class InferenceBackend:
 
         return formatted
 
-    def _format_generic_template(self, messages: list, special_tokens: dict) -> str:
+    def _format_generic_template(self, messages: list, _special_tokens: dict) -> str:
         """Generic fallback formatting"""
         formatted = ""
 
