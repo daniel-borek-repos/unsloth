@@ -263,7 +263,7 @@ class LlamaCppBackend:
             cvd = os.environ.get("CUDA_VISIBLE_DEVICES")
             if cvd is not None and cvd.strip():
                 try:
-                    allowed = set(int(x.strip()) for x in cvd.split(","))
+                    allowed = {int(x.strip()) for x in cvd.split(",")}
                 except ValueError:
                     pass  # Non-numeric (e.g., "GPU-uuid"), ignore filter
 
