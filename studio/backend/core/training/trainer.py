@@ -988,7 +988,7 @@ class UnslothTrainer:
                 # Phase 2: Whisper uses FastModel.get_peft_model with task_type=None
                 from unsloth import FastModel
 
-                logger.info(f"Audio model (whisper) LoRA configuration:")
+                logger.info("Audio model (whisper) LoRA configuration:")
                 logger.info(f"  - Target modules: {target_modules}\n")
 
                 self.model = FastModel.get_peft_model(
@@ -1029,7 +1029,7 @@ class UnslothTrainer:
 
             elif self.is_vlm:
                 # Vision model LoRA
-                logger.info(f"Vision model LoRA configuration:")
+                logger.info("Vision model LoRA configuration:")
                 logger.info(f"  - Finetune vision layers: {finetune_vision_layers}")
                 logger.info(f"  - Finetune language layers: {finetune_language_layers}")
                 logger.info(
@@ -1057,7 +1057,7 @@ class UnslothTrainer:
                 )
             else:
                 # Text model LoRA
-                logger.info(f"Text model LoRA configuration:")
+                logger.info("Text model LoRA configuration:")
                 logger.info(f"  - Target modules: {target_modules}\n")
 
                 self.model = FastLanguageModel.get_peft_model(
