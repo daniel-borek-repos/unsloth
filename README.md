@@ -22,7 +22,7 @@ Run and train AI models with a unified local interface.
 Unsloth Studio lets you run and train text, [audio](https://unsloth.ai/docs/basics/text-to-speech-tts-fine-tuning), [embedding](https://unsloth.ai/docs/new/embedding-finetuning), [vision](https://unsloth.ai/docs/basics/vision-fine-tuning) models on Windows, Linux and macOS.
 
 ## ⭐ Features
-Unsloth provides several key features for both training and inference:
+Unsloth provides several key features for both inference and training:
 ### Inference
 * **Search + download + run models** including GGUF, LoRA adapters, safetensors
 * **Export models**: [Save or export](https://unsloth.ai/docs/new/studio/export) models to GGUF, 16-bit safetensors and other formats.
