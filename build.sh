@@ -9,7 +9,7 @@ npm run build       # outputs to studio/frontend/dist/
 cd ../..
 
 # 2. Clean old artifacts
-rm -rf build dist *.egg-info
+rm -rf ./build ./dist ./*.egg-info
 
 # 3. Build wheel
 python -m build
