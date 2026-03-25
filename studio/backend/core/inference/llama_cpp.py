@@ -28,6 +28,7 @@ import httpx
 logger = get_logger(__name__)
 
 _GGUF_EXT = ".gguf"
+_LOST_CONNECTION_MSG = "Lost connection to llama-server"
 
 
 class LlamaCppBackend:
@@ -1574,7 +1575,7 @@ class LlamaCppBackend:
                                 )
 
         except httpx.ConnectError:
-            raise RuntimeError("Lost connection to llama-server")
+            raise RuntimeError(_LOST_CONNECTION_MSG)
         except Exception as e:
             if cancel_event is not None and cancel_event.is_set():
                 return
@@ -1650,7 +1651,7 @@ class LlamaCppBackend:
                         )
                     data = resp.json()
             except httpx.ConnectError:
-                raise RuntimeError("Lost connection to llama-server")
+                raise RuntimeError(_LOST_CONNECTION_MSG)
 
             choices = data.get("choices", [])
             if not choices:
@@ -1938,7 +1939,7 @@ class LlamaCppBackend:
                                 )
 
         except httpx.ConnectError:
-            raise RuntimeError("Lost connection to llama-server")
+            raise RuntimeError(_LOST_CONNECTION_MSG)
         except Exception as e:
             if cancel_event is not None and cancel_event.is_set():
                 return
