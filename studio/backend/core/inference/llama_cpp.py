@@ -13,6 +13,7 @@ import contextlib
 import json
 import struct
 import structlog
+from dataclasses import dataclass
 from loggers import get_logger
 import shutil
 import signal
@@ -29,6 +30,29 @@ logger = get_logger(__name__)
 
 _GGUF_EXT = ".gguf"
 _THINK_CLOSE_TAG = "</think>"
+
+
+@dataclass
+class SamplingParams:
+    """Groups sampling-related parameters for chat completions."""
+
+    temperature: float = 0.6
+    top_p: float = 0.95
+    top_k: int = 20
+    min_p: float = 0.01
+    max_tokens: Optional[int] = None
+    repetition_penalty: float = 1.0
+    presence_penalty: float = 0.0
+    stop: Optional[list[str]] = None
+
+
+@dataclass
+class ToolOptions:
+    """Groups tool-calling configuration for the agentic loop."""
+
+    max_tool_iterations: int = 10
+    auto_heal_tool_calls: bool = True
+    tool_call_timeout: int = 300
 
 
 class LlamaCppBackend:
@@ -1588,19 +1612,10 @@ class LlamaCppBackend:
         self,
         messages: list[dict],
         tools: list[dict],
-        temperature: float = 0.6,
-        top_p: float = 0.95,
-        top_k: int = 20,
-        min_p: float = 0.01,
-        max_tokens: Optional[int] = None,
-        repetition_penalty: float = 1.0,
-        presence_penalty: float = 0.0,
-        stop: Optional[list[str]] = None,
+        sampling: Optional[SamplingParams] = None,
         cancel_event: Optional[threading.Event] = None,
         enable_thinking: Optional[bool] = None,
-        max_tool_iterations: int = 10,
-        auto_heal_tool_calls: bool = True,
-        tool_call_timeout: int = 300,
+        tool_options: Optional[ToolOptions] = None,
         session_id: Optional[str] = None,
     ) -> Generator[dict, None, None]:
         """
@@ -1612,6 +1627,23 @@ class LlamaCppBackend:
           {"type": "reasoning", "text": "token"}          -- streamed reasoning tokens (cumulative)
         """
         from core.inference.tools import execute_tool
+
+        if sampling is None:
+            sampling = SamplingParams()
+        if tool_options is None:
+            tool_options = ToolOptions()
+
+        temperature = sampling.temperature
+        top_p = sampling.top_p
+        top_k = sampling.top_k
+        min_p = sampling.min_p
+        max_tokens = sampling.max_tokens
+        repetition_penalty = sampling.repetition_penalty
+        presence_penalty = sampling.presence_penalty
+        stop = sampling.stop
+        max_tool_iterations = tool_options.max_tool_iterations
+        auto_heal_tool_calls = tool_options.auto_heal_tool_calls
+        tool_call_timeout = tool_options.tool_call_timeout
 
         if not self.is_loaded:
             raise RuntimeError("llama-server is not loaded")

@@ -27,7 +27,7 @@ if str(backend_path) not in sys.path:
 # Import backend functions
 try:
     from core.inference import get_inference_backend
-    from core.inference.llama_cpp import LlamaCppBackend
+    from core.inference.llama_cpp import LlamaCppBackend, SamplingParams, ToolOptions
     from utils.models import ModelConfig
     from utils.inference import load_inference_config
     from utils.models.model_config import load_model_defaults
@@ -36,7 +36,7 @@ except ImportError:
     if str(parent_backend) not in sys.path:
         sys.path.insert(0, str(parent_backend))
     from core.inference import get_inference_backend
-    from core.inference.llama_cpp import LlamaCppBackend
+    from core.inference.llama_cpp import LlamaCppBackend, SamplingParams, ToolOptions
     from utils.models import ModelConfig
     from utils.inference import load_inference_config
     from utils.models.model_config import load_model_defaults
@@ -1038,9 +1038,7 @@ async def openai_chat_completions(
                 tools_to_use = ALL_TOOLS
 
             def gguf_generate_with_tools():
-                return llama_backend.generate_chat_completion_with_tools(
-                    messages = gguf_messages,
-                    tools = tools_to_use,
+                _sampling = SamplingParams(
                     temperature = payload.temperature,
                     top_p = payload.top_p,
                     top_k = payload.top_k,
@@ -1048,17 +1046,25 @@ async def openai_chat_completions(
                     max_tokens = payload.max_tokens,
                     repetition_penalty = payload.repetition_penalty,
                     presence_penalty = payload.presence_penalty,
-                    cancel_event = cancel_event,
-                    enable_thinking = payload.enable_thinking,
-                    auto_heal_tool_calls = payload.auto_heal_tool_calls
-                    if payload.auto_heal_tool_calls is not None
-                    else True,
+                )
+                _tool_opts = ToolOptions(
                     max_tool_iterations = payload.max_tool_calls_per_message
                     if payload.max_tool_calls_per_message is not None
                     else 10,
+                    auto_heal_tool_calls = payload.auto_heal_tool_calls
+                    if payload.auto_heal_tool_calls is not None
+                    else True,
                     tool_call_timeout = payload.tool_call_timeout
                     if payload.tool_call_timeout is not None
                     else 300,
+                )
+                return llama_backend.generate_chat_completion_with_tools(
+                    messages = gguf_messages,
+                    tools = tools_to_use,
+                    sampling = _sampling,
+                    cancel_event = cancel_event,
+                    enable_thinking = payload.enable_thinking,
+                    tool_options = _tool_opts,
                     session_id = payload.session_id,
                 )
 
