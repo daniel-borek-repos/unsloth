@@ -1710,7 +1710,7 @@ class InferenceBackend:
             formatted_prompt = tokenizer.apply_chat_template(
                 chat_messages, tokenize = False, add_generation_prompt = True
             )
-            logger.info(f"Successfully applied tokenizer's native chat template")
+            logger.info("Successfully applied tokenizer's native chat template")
             return formatted_prompt
         except Exception as e:
             error_msg = str(e).lower()
