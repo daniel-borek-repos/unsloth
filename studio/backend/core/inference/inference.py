@@ -1242,8 +1242,14 @@ class InferenceBackend:
             return
 
         try:
+            if cancel_event is not None and cancel_event.is_set():
+                return
+
             with self._generation_lock:
                 result = whisper_pipe({"raw": audio_array, "sampling_rate": 16000})
+
+            if cancel_event is not None and cancel_event.is_set():
+                return
 
             text = result.get("text", "") if isinstance(result, dict) else str(result)
             if text:
