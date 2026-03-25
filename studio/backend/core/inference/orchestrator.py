@@ -593,6 +593,7 @@ class InferenceOrchestrator:
             sub_config = {
                 "model_name": model_name,
                 "max_seq_length": max_seq_length,
+                "dtype": dtype,
                 "load_in_4bit": load_in_4bit,
                 "hf_token": hf_token or "",
                 "gguf_variant": getattr(config, "gguf_variant", None),
