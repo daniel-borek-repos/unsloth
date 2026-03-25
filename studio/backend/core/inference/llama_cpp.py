@@ -1224,7 +1224,7 @@ class LlamaCppBackend:
                             tc["function"]["arguments"]
                         )
                     tool_calls.append(tc)
-                except (json.JSONDecodeError, ValueError):
+                except ValueError:
                     pass
 
         # Pattern 2: XML-style <function=name><parameter=key>value</parameter></function>
