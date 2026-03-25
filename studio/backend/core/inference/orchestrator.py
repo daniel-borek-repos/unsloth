@@ -641,7 +641,7 @@ class InferenceOrchestrator:
                 self.loading_models.discard(model_name)
                 self.active_model_name = None
                 self.models.clear()
-                raise Exception(error)
+                raise RuntimeError(error)
 
         except Exception:
             self.loading_models.discard(model_name)
