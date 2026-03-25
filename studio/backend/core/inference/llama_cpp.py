@@ -28,6 +28,7 @@ import httpx
 logger = get_logger(__name__)
 
 _GGUF_EXT = ".gguf"
+_THINK_CLOSE_TAG = "</think>"
 
 
 class LlamaCppBackend:
@@ -1529,7 +1530,7 @@ class LlamaCppBackend:
                                 if in_thinking:
                                     if has_content_tokens:
                                         # Real thinking + content: close the tag
-                                        cumulative += "</think>"
+                                        cumulative += _THINK_CLOSE_TAG
                                         yield cumulative
                                     else:
                                         # Only reasoning_content, no content tokens:
@@ -1564,7 +1565,7 @@ class LlamaCppBackend:
                                     if token:
                                         has_content_tokens = True
                                         if in_thinking:
-                                            cumulative += "</think>"
+                                            cumulative += _THINK_CLOSE_TAG
                                             in_thinking = False
                                         cumulative += token
                                         yield cumulative
@@ -1891,7 +1892,7 @@ class LlamaCppBackend:
                             if line == "data: [DONE]":
                                 if in_thinking:
                                     if has_content_tokens:
-                                        cumulative += "</think>"
+                                        cumulative += _THINK_CLOSE_TAG
                                         yield {
                                             "type": "content",
                                             "text": _strip_tool_markup(
@@ -1924,7 +1925,7 @@ class LlamaCppBackend:
                                     if token:
                                         has_content_tokens = True
                                         if in_thinking:
-                                            cumulative += "</think>"
+                                            cumulative += _THINK_CLOSE_TAG
                                             in_thinking = False
                                         cumulative += token
                                         cleaned = _strip_tool_markup(cumulative)
