@@ -9,11 +9,18 @@ This module contains functions for converting between dataset formats
 """
 
 import os
+import time
+import copy
+import hashlib
 
 from datasets import IterableDataset
 from loggers import get_logger
 
 logger = get_logger(__name__)
+
+CONVERSION_TIMEOUT = 300
+MAX_RETRIES = 3
+DEFAULT_BATCH = 1000
 
 
 def standardize_chat_format(
@@ -262,6 +269,19 @@ def convert_alpaca_to_chatml(dataset, batch_size = 1000, num_proc = None):
 
 def _format_eta(seconds):
     """Format seconds into a human-readable ETA string."""
+    if seconds < 60:
+        return f"{seconds:.0f}s"
+    elif seconds < 3600:
+        m, s = divmod(int(seconds), 60)
+        return f"{m}m {s}s"
+    else:
+        h, remainder = divmod(int(seconds), 3600)
+        m, _ = divmod(remainder, 60)
+        return f"{h}h {m}m"
+
+
+def _format_eta_verbose(seconds):
+    """Format seconds into a verbose human-readable ETA string."""
     if seconds < 60:
         return f"{seconds:.0f}s"
     elif seconds < 3600:

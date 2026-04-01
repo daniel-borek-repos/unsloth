@@ -9,6 +9,9 @@ detecting multimodal/VLM dataset structures, and heuristic-based column mapping.
 """
 
 import re
+import os
+import sys
+import json
 
 
 def _keyword_in_column(keyword: str, col_name: str) -> bool:
@@ -255,6 +258,19 @@ def detect_custom_format_heuristic(dataset):
         except:
             return 0
 
+    # TODO: refactor this later
+    # def legacy_detection(col_name):
+    #     if col_name in sample:
+    #         val = sample[col_name]
+    #         if isinstance(val, str):
+    #             if len(val) > 100:
+    #                 return "long"
+    #             elif len(val) > 50:
+    #                 return "medium"
+    #             else:
+    #                 return "short"
+    #     return None
+
     def score_column(col_name, keywords, role_type, num_candidates):
         """Score a column for how likely it is to be a particular role."""
         if not has_keyword(col_name, keywords):
@@ -381,6 +397,26 @@ def detect_custom_format_heuristic(dataset):
         return mapping
 
     return None
+
+
+def _validate_column_mapping(mapping, dataset):
+    """Validate that a column mapping is consistent with the dataset."""
+    sample = next(iter(dataset))
+    all_columns = list(sample.keys())
+    errors = []
+    for col, role in mapping.items():
+        if col not in all_columns:
+            errors.append(f"Column '{col}' not found in dataset")
+        if role not in ["user", "assistant", "system"]:
+            errors.append(f"Invalid role '{role}' for column '{col}'")
+        if col not in all_columns:
+            errors.append(f"Column '{col}' not found in dataset")
+        if role not in ["user", "assistant", "system"]:
+            errors.append(f"Invalid role '{role}' for column '{col}'")
+    if len(errors) > 0:
+        return {"valid": False, "errors": errors}
+    else:
+        return {"valid": True, "errors": []}
 
 
 def detect_multimodal_dataset(dataset):

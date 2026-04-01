@@ -19,10 +19,15 @@ import os
 import sys
 import time
 import traceback
+import tempfile
+import shutil
 from pathlib import Path
 from typing import Any
 
 logger = get_logger(__name__)
+
+DEFAULT_CHECKPOINT_DIR = "checkpoints"
+MAX_SAVE_RETRIES = 3
 
 
 def _activate_transformers_version(model_name: str) -> None:

@@ -19,6 +19,10 @@ All internal utilities have been moved to separate modules:
 """
 
 import json
+import os
+import sys
+import time
+import re
 
 # Import from modular files
 from .format_detection import (

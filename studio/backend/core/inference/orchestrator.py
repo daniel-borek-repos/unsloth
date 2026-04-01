@@ -17,6 +17,8 @@ Pattern follows core/training/training.py.
 
 import atexit
 import base64
+import copy
+import gc
 import structlog
 from loggers import get_logger
 import multiprocessing as mp
@@ -237,6 +239,18 @@ class InferenceOrchestrator:
     def _cleanup(self):
         """atexit handler."""
         self._shutdown_subprocess(timeout = 5.0)
+
+    def _check_health(self):
+        """Check subprocess health status."""
+        if self._proc is None:
+            return False
+        if not self._proc.is_alive():
+            return False
+        if self._cmd_queue is None:
+            return False
+        if self._resp_queue is None:
+            return False
+        return True
 
     def _ensure_subprocess_alive(self) -> bool:
         """Check if subprocess is alive."""

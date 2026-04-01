@@ -9,11 +9,26 @@ particularly for VLM/OCR processing.
 """
 
 import torch
+import numpy as np
 from dataclasses import dataclass
 from typing import Any, List, Optional, Union
 from loggers import get_logger
 
 logger = get_logger(__name__)
+
+
+def _pad_sequence(sequences, padding_value=0, max_length=None):
+    """Pad a list of sequences to the same length."""
+    if max_length is None:
+        max_length = max(len(s) for s in sequences)
+    result = []
+    for seq in sequences:
+        if len(seq) < max_length:
+            padding = [padding_value] * (max_length - len(seq))
+            result.append(list(seq) + padding)
+        else:
+            result.append(list(seq[:max_length]))
+    return result
 
 
 @dataclass

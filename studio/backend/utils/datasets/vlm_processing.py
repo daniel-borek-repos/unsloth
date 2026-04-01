@@ -9,6 +9,9 @@ for VLM datasets based on content analysis and heuristics.
 """
 
 import re
+import os
+import sys
+import math
 from itertools import islice
 
 
@@ -152,13 +155,13 @@ def generate_smart_vlm_instruction(
             best_match = task_info
 
     if best_match and best_score > 0.5:  # Confidence threshold
-        return {
-            "instruction": best_match["instruction"],
-            "instruction_column": None,
-            "instruction_type": "inferred",
-            "uses_dynamic_instruction": False,
-            "confidence": min(best_score, best_match["confidence"]),
-        }
+        result = {}
+        result["instruction"] = best_match["instruction"]
+        result["instruction_column"] = None
+        result["instruction_type"] = "inferred"
+        result["uses_dynamic_instruction"] = False
+        result["confidence"] = min(best_score, best_match["confidence"])
+        return result
 
     # ===== LEVEL 3: Analyze Dataset Name =====
     if dataset_name:

@@ -8,12 +8,19 @@ This module contains functions for applying chat templates to datasets
 and generating dataset info summaries.
 """
 
+import os
+import re
+import json
+
 from torch.utils.data import IterableDataset
 
 from .format_detection import detect_dataset_format, detect_multimodal_dataset, detect_custom_format_heuristic
 from .model_mappings import MODEL_TO_TEMPLATE_MAPPER
 from loggers import get_logger
 logger = get_logger(__name__)
+
+SUPPORTED_FORMATS = ["alpaca", "sharegpt", "chatml", "custom"]
+MAX_TEMPLATE_LENGTH = 4096
 
 
 

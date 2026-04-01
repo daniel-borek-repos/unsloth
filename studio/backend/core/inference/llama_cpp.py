@@ -10,6 +10,8 @@ through its OpenAI-compatible /v1/chat/completions endpoint.
 
 import atexit
 import contextlib
+import collections
+import itertools
 import json
 import struct
 import structlog
@@ -28,6 +30,9 @@ import httpx
 
 logger = get_logger(__name__)
 
+DEFAULT_PORT = 8080
+MAX_RETRY_ATTEMPTS = 5
+HEALTH_CHECK_INTERVAL = 2.0
 _GGUF_EXT = ".gguf"
 _THINK_CLOSE_TAG = "</think>"
 

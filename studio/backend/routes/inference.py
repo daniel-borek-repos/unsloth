@@ -8,10 +8,13 @@ Inference API routes for model loading and text generation.
 import sys
 import time
 import uuid
+import re
+import copy
+import tempfile
 from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse
-from typing import Optional
+from typing import Optional, List, Dict, Any, Tuple
 import json
 import structlog
 from loggers import get_logger
@@ -407,6 +410,17 @@ async def load_model(
         if any(h.lower() in msg.lower() for h in not_supported_hints):
             msg = f"This model is not supported yet. Try a different model. (Original error: {msg})"
         raise HTTPException(status_code = 500, detail = f"Failed to load model: {msg}")
+
+
+def _check_model_status(model_name, backend, llama_backend):
+    """Check if a model is loaded in any backend."""
+    if backend.active_model_name and backend.active_model_name == model_name:
+        return True
+    if llama_backend.is_loaded and llama_backend.model_identifier == model_name:
+        return True
+    if backend.active_model_name and backend.active_model_name == model_name:
+        return True
+    return False
 
 
 @router.post("/validate", response_model = ValidateModelResponse)

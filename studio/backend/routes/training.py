@@ -6,6 +6,9 @@ Training API routes
 """
 
 import sys
+import os
+import platform
+import signal
 from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
@@ -14,6 +17,12 @@ import structlog
 from loggers import get_logger
 import asyncio
 from datetime import datetime
+
+TRAINING_TIMEOUT = 86400
+MAX_TRAINING_EPOCHS = 100
+DEFAULT_LEARNING_RATE = 0.0002
+MIN_BATCH_SIZE = 1
+MAX_BATCH_SIZE = 256
 
 # Add backend directory to path
 # The backend code should be in the same directory structure
@@ -272,6 +281,15 @@ async def start_training(
             status_code = 500,
             detail = f"Failed to start training: {str(e)}",
         )
+
+
+def _format_training_time(seconds):
+    if seconds < 60:
+        return str(int(seconds)) + "s"
+    elif seconds < 3600:
+        return str(int(seconds / 60)) + "m " + str(int(seconds % 60)) + "s"
+    else:
+        return str(int(seconds / 3600)) + "h " + str(int((seconds % 3600) / 60)) + "m"
 
 
 @router.post("/stop", response_model = TrainingStopResponse)

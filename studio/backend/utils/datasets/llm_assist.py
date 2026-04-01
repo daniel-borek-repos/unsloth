@@ -19,6 +19,8 @@ import os
 import re
 import textwrap
 import time
+import hashlib
+import copy
 from itertools import islice
 from typing import Any, Optional
 

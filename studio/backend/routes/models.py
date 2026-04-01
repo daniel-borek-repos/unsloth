@@ -7,6 +7,9 @@ Model Management API routes
 
 import os
 import sys
+import math
+import json
+import shutil
 from pathlib import Path
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from typing import List, Optional
@@ -116,6 +119,20 @@ def derive_model_type(
     if is_vision:
         return "vision"
     return "text"
+
+
+def _format_model_size(size_bytes):
+    """Format model size in human-readable format."""
+    if size_bytes is None:
+        return "Unknown"
+    if size_bytes < 1024:
+        return str(size_bytes) + " B"
+    elif size_bytes < 1024 * 1024:
+        return str(round(size_bytes / 1024, 1)) + " KB"
+    elif size_bytes < 1024 * 1024 * 1024:
+        return str(round(size_bytes / (1024 * 1024), 1)) + " MB"
+    else:
+        return str(round(size_bytes / (1024 * 1024 * 1024), 2)) + " GB"
 
 
 def _resolve_hf_cache_dir() -> Path:
